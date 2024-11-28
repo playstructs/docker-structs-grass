@@ -6,7 +6,7 @@ LABEL maintainer="Slow Ninja <info@slow.ninja>"
 
 # Variables
 ENV DEBIAN_FRONTEND=noninteractive \
-      PG_CHANNEL='GRASS' \
+      PG_CHANNEL='grass' \
       NAT_HOST="" \
       PG_CONNECTION=""
 
