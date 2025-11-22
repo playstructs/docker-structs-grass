@@ -17,20 +17,13 @@ RUN apt-get update && \
         git \
         golang \
         postgresql-client \
-        curl \
-        unzip \
         &&  \
     rm -rf /var/lib/apt/lists/*
 
-ENV PATH=$PATH:/usr/local/go/bin
+ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
 
 # Install NATS CLI
-RUN NATS_VERSION=$(curl -s https://api.github.com/repos/nats-io/natscli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') && \
-    curl -L "https://github.com/nats-io/natscli/releases/download/${NATS_VERSION}/nats-${NATS_VERSION}-linux-amd64.zip" -o /tmp/nats.zip && \
-    unzip /tmp/nats.zip -d /tmp && \
-    mv /tmp/nats-${NATS_VERSION}-linux-amd64/nats /usr/local/bin/nats && \
-    chmod +x /usr/local/bin/nats && \
-    rm -rf /tmp/nats.zip /tmp/nats-${NATS_VERSION}-linux-amd64
+RUN go install github.com/nats-io/natscli/nats@latest
 
 # Building latest structsd
 RUN git clone https://github.com/playstructs/structs-grass.git && \
