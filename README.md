@@ -12,25 +12,37 @@ In the distant future the species of the galaxy are embroiled in a race for Alph
 ```
 git clone git@github.com:playstructs/docker-structs-grass.git
 cd docker-structs-grass
-docker build .
+docker build --build-arg GRASS_REF="${GRASS_REF:?set GRASS_REF to the relay commit}" -t structs-grass:candidate .
+```
+
+Use a commit from the structs-grass remote when building a release candidate.
+Run the relay integration check against the built image. It uses disposable
+PostgreSQL and NATS containers, tests ordered delivery through a burst and a
+135-second broker outage, then terminates the test LISTEN session and verifies
+the delivery probe after resubscription.
+
+```sh
+python3 tests/relay.py structs-grass:candidate
 ```
 
 # How to Use this Image
 
 ## Quickstart
 
-The following will run the latest GRASS process.
+Set `PG_CHANNEL`, `PG_CONNECTION` and `NAT_HOST` in a private env file.
+Choose a Docker network from which both PostgreSQL and NATS are reachable
+and set `GRASS_NETWORK` to its name.
 
 ```
-docker run -d --rm --name=structs-grass structs/structs-grass:latest
+docker run -d --rm --name=structs-grass --network "$GRASS_NETWORK" --env-file .env.grass structs/structs-grass:latest
 ```
 
 ## Interactive
 
-A good way to run for development and for continual monitoring is to attach to the terminal:
+To follow the running relay:
 
 ```
-docker run -it --rm --name=structs-grass structs/structs-grass:latest
+docker logs -f structs-grass
 ```
 
 # Learn more
