@@ -8,7 +8,9 @@ LABEL maintainer="Slow Ninja <info@slow.ninja>"
 ENV DEBIAN_FRONTEND=noninteractive \
       PG_CHANNEL='grass' \
       NAT_HOST="" \
-      PG_CONNECTION=""
+      PG_CONNECTION="" \
+      INFLUENCE_ENABLED="true" \
+      INFLUENCE_DESTINATION="default"
 
 # Install packages
 RUN apt-get update && \
@@ -30,11 +32,11 @@ ARG GRASS_REF=main
 RUN git clone https://github.com/playstructs/structs-grass.git && \
     cd structs-grass && \
     git checkout "$GRASS_REF" && \
-    go build -o /usr/local/go/bin/grass grass.go
+    go build -o /usr/local/go/bin/grass .
 
 # Copy scripts
 COPY scripts/ /scripts/
 RUN chmod +x /scripts/*.sh
 
 # Run Structs
-CMD ["sh", "-c", "exec grass -channel \"$PG_CHANNEL\" -dbhost \"$PG_CONNECTION\" -nathost \"$NAT_HOST\""]
+CMD ["sh", "-c", "exec grass -channel \"$PG_CHANNEL\" -dbhost \"$PG_CONNECTION\" -nathost \"$NAT_HOST\" -influence=\"$INFLUENCE_ENABLED\" -influence-destination \"$INFLUENCE_DESTINATION\""]
