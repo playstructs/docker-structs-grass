@@ -73,6 +73,8 @@ structs-pg through `influence-grass-20261111` and its paired sync-state writer.
 `INFLUENCE_ENABLED=true` is the default; set it to `false` only when intentionally
 running the legacy notification path alone. `INFLUENCE_DESTINATION=default` is
 the persistent delivery-checkpoint name: keep it stable across restarts and use
-separate names for independent NATS destinations. The relay must have NATS replay
-request/reply permissions described in structs-grass's README. No JetStream
-configuration is required. Build a released relay commit containing `influence.go`.
+separate names for independent NATS destinations. The relay only needs publish
+permission for influence subjects; clients only subscribe. Initial loading and
+reconnect/gap recovery use the influence API. Normal grass updates contain complete
+data and require no API request. No JetStream configuration is required. Build a
+released relay commit containing `influence.go`.
